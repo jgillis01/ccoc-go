@@ -4,7 +4,8 @@ import "fmt"
 import "os"
 import "strings"
 import "path/filepath"
-import "gopkg.in/yaml.v2"
+
+//import "gopkg.in/yaml.v2"
 
 const outputPath string = "./content"
 
@@ -16,46 +17,44 @@ type Recording struct {
 	FileName string
 }
 
-func (r Recording) fromFilePath(filePath string) Recording {
+func newFromFilePath(filePath string) *Recording {
 	data := make([]byte, 200)
 
 	file, err := os.Open(filePath)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		panic(err)
 	}
 
 	defer file.Close()
 
 	count, err := file.Read(data)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		panic(err)
 	}
+
+	r := Recording{FileName: filePath}
 
 	err = yaml.Unmarshal(data[:count], &r)
 	if err != nil {
-		fmt.Println("There was an error reading file: ", filePath, " with error: ", err)
-		os.Exit(1)
+		panic(fmt.Errorf("There was an error reading file: %s with error: %v", filePath, err))
 	}
 
-	r.FileName = filePath
-	return r
+	//r.FileName = filePath
+	return &r
 }
 
-func (r Recording) datePath() string {
+func (r *Recording) datePath() string {
 	dateParts := strings.Split(r.Date, "-")
 
 	if len(dateParts) != 3 {
-		fmt.Println("File does not have a properly formatted date: ", r.Title)
-		os.Exit(1)
+		panic(fmt.Errorf("File does not have a properly formatted date: %s", r.Title))
 	}
 
 	datePathParts := []string{dateParts[2], dateParts[0], dateParts[1]}
 	return filepath.Join(datePathParts...)
 }
 
-func createFilePath(r Recording) {
+func (r *Recording) createFilePath() {
 	current, err := os.Getwd()
 	if err != nil {
 		fmt.Println(err)
@@ -94,13 +93,13 @@ func main() {
 	}
 	*/
 	for _, file := range files {
-		r := Recording{}
+		//r := Recording{}
 		fmt.Printf("Converting file: %s\n", file)
-		r = r.fromFilePath(file)
+		r := newFromFilePath(file)
 		fmt.Println("Recording: ", r.FileName, "Date: ", r.datePath())
 		fmt.Println("Creating output directory: ", r.FileName)
-		createFilePath(r)
-		recordings = append(recordings, r)
+		r.createFilePath()
+		recordings = append(recordings, *r)
 	}
 
 	fmt.Println("Recording Count: ", len(recordings))
