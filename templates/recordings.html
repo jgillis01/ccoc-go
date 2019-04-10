@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Central Church of Christ - Recordings</title>
+    <link rel="stylesheet" href="/style/screen.scs.css">
+  </head>
+  <body>
+    <div id="main" class="container">
+      <div class="row">
+        <header class="col-md-12">
+          <h1 class="text-center align-middle">Central Church of Christ</h1>
+        </header>
+      </div>
+      <div class="row" id="main-nav">
+        <div class="col">
+          <nav class="nav nav-justified flex-column flex-md-row">
+            <a class="nav-link" href="/">Home</a>
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" href="#">About Us</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="/about">Who We Are</a>
+              <a class="dropdown-item" href="/ministers">Ministers</a>
+              <a class="dropdown-item" href="/elders-deacons">Elders and Deacons</a>
+            </div>
+            <a class="nav-link" href="/mission-works">Mission Works</a>
+            <a class="nav-link" href="/news-events">News & Events</a>
+            <a class="nav-link" href="/personal-study">Personal Study</a>
+            <a class="nav-link" href="/recordings">Recordings</a>
+          </nav>
+        </div>
+      </div>
+      <div class="row content">
+        <div id="content" class="col-9">
+          <div class="row">
+            <h3 class="col">Recordings</h3>
+          </div>
+          <div class="row">
+            {{ range . }}
+            <div class="col">
+              <div class="card">
+                <div class="card-header font-weight-bold">{{ .Title }}</div>
+                <div class="card-body">
+                  <p class="card-text">
+                  <span class="font-weight-bold">Author:</span> {{ .Author }}<br>
+                  <span class="font-weight-bold">Date:</span> {{ .Date }} <br>
+                  </p>
+                  <a class="card-link" href="https://s3.amazonaws.com/ccoc-recordings/{{ .BaseName }}.mp3" download="{{ .BaseName }}.mp3">Download</a> (Right-click and Save)
+                </div>
+                <div class="card-footer">
+                  <audio controls="controls">
+                    Your browser does not support the <code>audio</code> element.
+                    <source src="https://s3.amazonaws.com/ccoc-recordings/{{ .BaseName }}.mp3" type="audio/mpeg">
+                    <source src="https://s3.amazonaws.com/ccoc-recordings/{{ .BaseName }}.ogg" type="audio/ogg">
+                  </audio>
+                </div>
+              </div>
+            </div>
+            {{ end }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
