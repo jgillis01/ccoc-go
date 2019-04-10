@@ -75,7 +75,7 @@ func (r *Recording) createFilePath() {
 	err = os.MkdirAll(path, os.ModePerm)
 
 	if err != nil {
-		panic(fmt.Errorf("Could not create directory at path: %s, Error: %s", r.FilePath, err))
+		panic(fmt.Errorf("Could not create directory at path: %s, Error: %v", r.FilePath, err))
 		os.Exit(1)
 	}
 }
@@ -83,7 +83,7 @@ func (r *Recording) createFilePath() {
 func globFiles() []string {
 	files, err := filepath.Glob("./recordings/*.yaml")
 	if err != nil {
-		panic(fmt.Errorf("There was an error trying to retrieve yaml files: %s", err))
+		panic(fmt.Errorf("There was an error trying to retrieve yaml files: %v", err))
 		os.Exit(1)
 	}
 	return files
@@ -94,18 +94,18 @@ func renderTemplate(recordings []Recording) {
 	fmt.Println("Creating: ", filePath)
 	file, err := os.Create(filePath)
 	if err != nil {
-		panic(fmt.Errorf("There was an error creating file: %s, Error: %s", filePath, err))
+		panic(fmt.Errorf("There was an error creating file: %s, Error: %v", filePath, err))
 	}
 
 	defer file.Close()
 
 	tmpl, err := template.ParseFiles("./templates/recordings.html")
 	if err != nil {
-		panic(fmt.Errorf("There was an error loading the template: %s", err))
+		panic(fmt.Errorf("There was an error loading the template: %v", err))
 	}
 	err = tmpl.Execute(file, recordings)
 	if err != nil {
-		panic(fmt.Errorf("There was an error rendering the template: %s", err))
+		panic(fmt.Errorf("There was an error rendering the template: %v", err))
 	}
 }
 
