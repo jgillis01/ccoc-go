@@ -13,7 +13,7 @@ func main() {
 
 	for _, file := range files {
 		fmt.Printf("Processing: %s\n", file)
-		r := rec.NewFromFilePath(file)
+		r := rec.NewRecording(file)
 		r.CreateFilePath()
 		recordings[r.DatePath()] = append(recordings[r.DatePath()], *r)
 	}

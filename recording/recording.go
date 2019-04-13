@@ -22,7 +22,7 @@ type Recording struct {
 }
 
 //Create a new Recording based on given filePath
-func NewFromFilePath(filePath string) *Recording {
+func NewRecording(filePath string) *Recording {
 	data := make([]byte, 200)
 
 	file, err := os.Open(filePath)
