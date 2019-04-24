@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	rec "github.com/jgillis01/ccoc_go/recording"
+	rec "github.com/jgillis01/ccoc-go/recording"
 )
 
 func main() {
