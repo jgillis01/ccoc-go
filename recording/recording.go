@@ -1,6 +1,7 @@
 package recording
 
 import (
+	"encoding/json"
 	"fmt"
 	"gopkg.in/yaml.v2"
 	"html/template"
@@ -12,13 +13,14 @@ import (
 const outputPath string = "./content"
 
 type Recording struct {
-	Title    string   `yaml:"title"`
-	Date     string   `yaml:date`
-	Author   string   `yaml:author`
-	Tags     []string `yaml:tags`
-	FileName string
-	FilePath string
-	BaseName string
+	Title    string   `yaml:"title" json:"title"`
+	Date     string   `yaml:"date" json:"date"`
+	Author   string   `yaml:"author" json:"author"`
+	Tags     []string `yaml:"tags" json:"tags,omitempty"`
+	HtmlPath string   `json:"htmlPath"`
+	FileName string   `json:"-"`
+	FilePath string   `json:"-"`
+	BaseName string   `json:"-"`
 }
 
 //Create a new Recording based on given filePath
@@ -45,11 +47,14 @@ func NewRecording(filePath string) *Recording {
 		panic(fmt.Errorf("There was an error reading file: %s with error: %v", filePath, err))
 	}
 
+	r.HtmlPath = r.createHtmlPath()
+
 	return &r
 }
 
 func (r *Recording) fileWithoutExt() string {
 	name := strings.TrimSuffix(r.FileName, filepath.Ext(r.FileName))
+	name = strings.Replace(name, "recordings/", "", 1)
 	return name
 }
 
@@ -62,6 +67,11 @@ func (r *Recording) DatePath() string {
 
 	datePathParts := []string{dateParts[2], dateParts[0], dateParts[1]}
 	return filepath.Join(datePathParts...)
+}
+
+func (r *Recording) createHtmlPath() string {
+	path := filepath.Join(r.DatePath(), "index.html")
+	return path
 }
 
 func (r *Recording) CreateFilePath() {
@@ -93,7 +103,6 @@ func GlobFiles() []string {
 
 func RenderTemplate(recordings []Recording) {
 	filePath := filepath.Join(recordings[0].FilePath, "index.html")
-	fmt.Println("Creating: ", filePath)
 	file, err := os.Create(filePath)
 	if err != nil {
 		panic(fmt.Errorf("There was an error creating file: %s, Error: %v", filePath, err))
@@ -108,5 +117,20 @@ func RenderTemplate(recordings []Recording) {
 	err = tmpl.Execute(file, recordings)
 	if err != nil {
 		panic(fmt.Errorf("There was an error rendering the template: %v", err))
+	}
+}
+
+func RenderJsonFile(recordings []Recording) {
+	file, err := os.Create(filepath.Join(outputPath, "./recordings.json"))
+	if err != nil {
+		panic(fmt.Errorf("There was an error opening the JSON output file: %v", err))
+	}
+	defer file.Close()
+
+	enc := json.NewEncoder(file)
+
+	err = enc.Encode(recordings)
+	if err != nil {
+		panic(fmt.Errorf("There was an error encoding the JSON file: %v", err))
 	}
 }
