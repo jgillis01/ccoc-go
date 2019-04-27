@@ -25,6 +25,12 @@ func main() {
 		rec.RenderTemplate(records)
 	}
 
+	// Reverse  records slice
+	for i := len(allRecords)/2 - 1; i >= 0; i-- {
+		opp := len(allRecords) - 1 - i
+		allRecords[i], allRecords[opp] = allRecords[opp], allRecords[i]
+	}
+
 	fmt.Println("Creating:  JSON search file")
 	rec.RenderJsonFile(allRecords)
 
